@@ -44,6 +44,7 @@ def main_agqr():
     Agqr = agqr.agqr()
     Agqr.change_keywords(keywords)
     agqr_data = Agqr.search()
+    print('main_agqr')
     print(agqr_data)
     while(True):
         now = DT.datetime.now()
