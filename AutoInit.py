@@ -7,3 +7,5 @@ if __name__ == "__main__":
     os.system("sudo systemctl daemon-reload")
     os.system("sudo systemctl enable rec_adio.service")
     os.system("sudo systemctl start rec_adio.service")
+    # echo alias python=python3 >> ~/.bashrc
+    # source ~/.bashrc
