@@ -7,11 +7,12 @@ import mysql.connector as sql
 import hashlib
 import subprocess
 
+
 def load_configurations():
     ROOT = (__file__.replace("/lib/functions.py", ""))
     if (ROOT == __file__):
         ROOT = ROOT.replace("functions.py", "..")
-    Path = ROOT + "/conf/config.json"
+    Path = ROOT + "/conf/myconfig.json"
     if (os.path.isfile(Path) is False):
         print("config file is not found")
         return None
@@ -19,7 +20,8 @@ def load_configurations():
     tmp = json.load(f)
     return tmp
 
-def createSaveDirPath(path = ""):
+
+def createSaveDirPath(path=""):
     ROOT = (__file__.replace("/lib/functions.py", ""))
     if (ROOT == __file__):
         ROOT = ROOT.replace("functions.py", ".")
@@ -31,9 +33,11 @@ def createSaveDirPath(path = ""):
         os.makedirs(Path)
     return Path
 
+
 def createSaveDir(Path):
     if (os.path.isdir(Path) is False):
         os.makedirs(Path)
+
 
 def is_recording_succeeded(Path):
     m4a_path = Path + ".m4a"
@@ -47,15 +51,18 @@ def is_recording_succeeded(Path):
     else:
         return False
 
+
 def recording_successful_toline(title):
     headers = {"Authorization": "Bearer %s" % line_token}
-    payload = {"message": "\n"+title+" を録音しました!"}
+    payload = {"message": "\n" + title + " を録音しました!"}
     requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
+
 
 def recording_failure_toline(title):
     headers = {"Authorization": "Bearer %s" % line_token}
-    payload = {"message": "\n"+title+" の録音に失敗しました"}
+    payload = {"message": "\n" + title + " の録音に失敗しました"}
     requests.post("https://notify-api.line.me/api/notify", headers=headers, data=payload)
+
 
 def did_record_prog(filePath, title, timestamp):
     if (Mysql.hadInit):
@@ -66,8 +73,10 @@ def did_record_prog(filePath, title, timestamp):
         # DBなし
         return os.path.exists(filePath)
 
+
 class DBXController():
     hadInit = False
+
     def __init__(self):
         tmpconf = load_configurations()
         if (tmpconf is None) or (tmpconf["all"]["dbx_token"] == ""):
@@ -89,9 +98,9 @@ class DBXController():
         db_list = [d.name for d in res.entries]
         if not title in db_list:
             self.dbx.files_create_folder(dbx_path)
-        dbx_path += "/" +title + "_" + ft[:12]+ ".m4a"
+        dbx_path += "/" + title + "_" + ft[:12] + ".m4a"
         self.dbx.files_upload(fileData, dbx_path)
-    
+
     def upload_onsen(self, title, count, fileData):
         if not self.hadInit:
             return
@@ -104,8 +113,8 @@ class DBXController():
         dbx_path += "/" + title + "#" + count + ".mp3"
         self.dbx.files_upload(fileData, dbx_path)
 
-DropBox = DBXController()
 
+DropBox = DBXController()
 
 
 class SwiftController():
@@ -127,7 +136,7 @@ class SwiftController():
             return
         self.hadInit = True
         self.create_container(self.containerName)
-    
+
     def renewal_token(self):
         data = {
             "auth": {
@@ -140,7 +149,7 @@ class SwiftController():
         }
         try:
             res = requests.post(self.identityUrl + "/tokens",
-                                headers={"Content-Type" : "application/json"},
+                                headers={"Content-Type": "application/json"},
                                 data=json.dumps(data))
             resData = json.loads(res.text)
             if "error" in resData.keys():
@@ -150,22 +159,22 @@ class SwiftController():
             return False
         return True
 
-    def create_container(self, containerName, isRenewToken = False):
+    def create_container(self, containerName, isRenewToken=False):
         if not self.hadInit:
             return False
         if isRenewToken:
             self.renewal_token()
         res = requests.put(self.objectStrageUrl + "/" + containerName,
-                            headers={
-                                "Content-Type" : "application/json",
-                                "X-Auth-Token": self.token,
-                                "X-Container-Read": ".r:*"
-                            })
+                           headers={
+                               "Content-Type": "application/json",
+                               "X-Auth-Token": self.token,
+                               "X-Container-Read": ".r:*"
+                           })
         if res.status_code in [200, 201, 204]:
             return True
         else:
             return False
-    
+
     def upload_file(self, filePath):
         if not self.hadInit:
             return False
@@ -180,17 +189,18 @@ class SwiftController():
         Path = self.objectStrageUrl + "/" + self.containerName + "/" + hash
         f = open(filePath.replace(".m4a", ".mp3"), "rb")
         res = requests.put(Path,
-                            headers={
-                                "Content-Type" : "audio/mpeg",  # ここで送信するデータ形式を決める
-                                "X-Auth-Token": self.token
-                            },
-                            data=f.read())
+                           headers={
+                               "Content-Type": "audio/mpeg",  # ここで送信するデータ形式を決める
+                               "X-Auth-Token": self.token
+                           },
+                           data=f.read())
         print(res.status_code)
         # delete mp3 file
         if (ext == ".m4a"):
             cmd = 'rm "%s"' % (filePath.replace(".m4a", ".mp3"))
             subprocess.run(cmd, shell=True)
         return Path
+
 
 Swift = SwiftController()
 
@@ -204,17 +214,17 @@ class DBController:
             return
         try:
             self.conn = sql.connect(
-                host = tmpconf["mysql"]["hostname"] or 'localhost',
-                port = tmpconf["mysql"]["port"] or '3306',
-                user = tmpconf["mysql"]["username"],
-                password = tmpconf["mysql"]["password"],
-                database = tmpconf["mysql"]["database"]
+                host=tmpconf["mysql"]["hostname"] or 'localhost',
+                port=tmpconf["mysql"]["port"] or '3306',
+                user=tmpconf["mysql"]["username"],
+                password=tmpconf["mysql"]["password"],
+                database=tmpconf["mysql"]["database"]
             )
             self.hadInit = True
         except:
             print("Mysql login failed")
-    
-    def insert(self, title, pfm, timestamp, station, uri, info = ""):
+
+    def insert(self, title, pfm, timestamp, station, uri, info=""):
         if (not self.hadInit):
             return
         self.conn.ping(reconnect=True)
@@ -223,7 +233,7 @@ class DBController:
         cur.execute(s, (title, pfm, timestamp, station, uri, info))
         self.conn.commit()
         cur.close()
-    
+
     def check(self, title, timestamp):
         if (not self.hadInit):
             return
