@@ -23,7 +23,7 @@ def main_radiko():
     radiko_data = Radiko.search()
     while(True):
         now = DT.datetime.now()
-        #print(radiko_data)
+        print(radiko_data)
         if (bool(radiko_data)):
             for data in radiko_data:
                 tmp_time = data["DT_ft"] - now
@@ -39,11 +39,12 @@ def main_radiko():
             radiko_data = Radiko.search()
         time.sleep(60)
 
+
 def main_agqr():
     Agqr = agqr.agqr()
     Agqr.change_keywords(keywords)
     agqr_data = Agqr.search()
-    #print(agqr_data)
+    print(agqr_data)
     while(True):
         now = DT.datetime.now()
         if (bool(agqr_data)):
@@ -75,6 +76,7 @@ def main_onsen_hibiki():
                 print("in onsen, hibiki. there aren't new title.")
         time.sleep(300)
 
+
 if __name__ == "__main__":
     config = f.load_configurations()
     if (config is None):
@@ -84,9 +86,9 @@ if __name__ == "__main__":
     print("SAVEROOT : " + SAVEROOT)
     keywords = config["all"]["keywords"]
     ps = [
-        Process(target=main_radiko),
+        # Process(target=main_radiko),
         Process(target=main_agqr),
-        Process(target=main_onsen_hibiki)
+        # Process(target=main_onsen_hibiki)
     ]
     for i in ps:
         i.start()
