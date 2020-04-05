@@ -80,7 +80,9 @@ class agqr:
 
     def rec(self, data):
         program_data = data[0]
-        # print(program_data)
+        print("agqr start!")
+        print(program_data)
+
         wait_start_time = data[1]
         SAVEROOT = data[2]
 
