@@ -57,7 +57,11 @@ def main_agqr():
                     p = Process(target=Agqr.rec, args=([data, tmp_time.total_seconds(), SAVEROOT],))
                     p.start()
                     agqr_data.remove(data)
-        if (now.hour == 0 and now.minute <= 5 and Agqr.reload_date != DT.date.today()):
+        # if (now.hour == 0 and now.minute <= 5 and Agqr.reload_date != DT.date.today()):
+        if (now.hour == 15 and now.minute <= 12):
+            print(Agqr.reload_date)
+            print(DT.date.today())
+            print(Agqr.reload_date != DT.date.today())
             Agqr.reload_program()
             agqr_data = Agqr.search()
         time.sleep(60)
