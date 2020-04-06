@@ -18,11 +18,13 @@ class agqr:
         self.isKeyword = False
         self.reload_date = DT.date.today()
         self.program_agqr = json.loads(res.text)
-        print("agqr load at" + DT.date.today())
+        print("agqr load at")
+        print(DT.date.today())
 
     def reload_program(self):
         print("----------agqr reload------------------")
-        print("agqr load at" + DT.date.today())
+        print("agqr load at")
+        print(DT.date.today())
         res = requests.get(self.AGQR_URL)
         res.encoding = "utf-8"
         self.program_agqr = json.loads(res.text)
