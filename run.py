@@ -58,12 +58,13 @@ def main_agqr():
                     p.start()
                     agqr_data.remove(data)
         # if (now.hour == 0 and now.minute <= 5 and Agqr.reload_date != DT.date.today()):
-        if (now.hour == 15 and now.minute <= 12):
+        if (now.hour == 15 and now.minute <= 15):
             print(Agqr.reload_date)
             print(DT.date.today())
             print(Agqr.reload_date != DT.date.today())
             Agqr.reload_program()
             agqr_data = Agqr.search()
+            print(agqr_data)
         time.sleep(60)
 
 
