@@ -78,6 +78,15 @@ class agqr:
                 "dur": int("30"),
                 "pfm": "227"
             })
+        if (DT.datetime.now().strftime("%w") == "6"):
+            res.append({
+                "title": "WarikirenaiRadioSat",
+                "ft": DT.datetime.now().strftime("%Y%m%d1600"),
+                "DT_ft": DT.datetime.strptime(DT.datetime.now().strftime("%Y%m%d1600"), "%Y%m%d%H%M"),
+                "to": DT.datetime.now().strftime("%Y%m%d1630"),
+                "dur": int("30"),
+                "pfm": "227"
+            })
         if bool(res):
             return res
         else:
